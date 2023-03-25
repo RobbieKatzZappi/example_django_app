@@ -1,0 +1,18 @@
+<b><u>DOCUMENTS</u></b>
+{% if documents %}
+<table>
+  <tr>
+    <td><b>id</b>&emsp;&emsp;</td>
+    <td><b>name</b>&emsp;&emsp;&emsp;&emsp;</td>
+  </tr>
+  {% for document in documents %}
+    <tr>
+      <td>{{ document.id }}</td>
+      <td><a href='/client_management/download_document/{{document.id}}' download>{{document.name}}</a></td>
+    </tr>
+  {% endfor %}
+
+</table>
+{% else %}
+    <p>This client has no uploaded documents.</p>
+{% endif %}

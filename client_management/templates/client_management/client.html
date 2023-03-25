@@ -16,7 +16,7 @@
       <td><a href="/client_management/client/{{ client.id }}/">{{ client.id }}</a></td>
       <td> {{client.first_name}} {{client.surname}}</td>
       <td> {{client.email_address}}</td>
-      <td> {{client.document_count}}</td>
+      <td> <a href="/client_management/client/{{ client.id }}/documents">{{client.document_count}}</a></td>
       <td> {{client.requested_document_count}}</td>
     </tr>
 </table>

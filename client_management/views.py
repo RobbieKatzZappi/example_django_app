@@ -1,7 +1,6 @@
 
-from django.http import HttpResponse
-from django.http import HttpResponseRedirect
-from .models import Client, DocumentRequest
+from django.http import HttpResponse, FileResponse, HttpResponseRedirect
+from .models import Client, DocumentRequest, Document
 from django.shortcuts import render
 from .forms import RequestDocumentForm, UploadDocumentForm
 
@@ -14,6 +13,11 @@ def index(request):
 def error(request):
     return HttpResponse("error")
 
+def documents(request, client_id):
+    client = Client.objects.get(id=client_id)
+    context = {'documents': client.documents.all}
+    return render(request, 'client_management/documents.html', context)
+
 def request_document(request, client_id):
     if request.method == 'POST':
         form = RequestDocumentForm(request.POST)
@@ -25,6 +29,10 @@ def request_document(request, client_id):
         form = RequestDocumentForm()
 
     return render(request, 'name.html', {'form': form})
+
+def download_document(request, document_id):
+    document = Document.objects.get(id=document_id)
+    return FileResponse(open('./' + document.destination, 'rb'), as_attachment=True)
 
 def upload_document(request, document_request_uuid):
     document_request_invalid = DocumentRequest.objects.filter(uuid=document_request_uuid, uploaded=False).count() == 0
