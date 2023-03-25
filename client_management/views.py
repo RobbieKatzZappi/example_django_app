@@ -3,8 +3,11 @@ from django.http import HttpResponse
 from django.http import HttpResponseRedirect
 from .models import Client, DocumentRequest
 from django.shortcuts import render
-from .forms import RequestDocumentForm
-from .services import DocumentRequestService
+from .forms import RequestDocumentForm, UploadDocumentForm
+
+from .services import DocumentRequestService, UploadDocumentService
+
+import pdb
 
 def index(request):
     return HttpResponse("client management index")
@@ -20,6 +23,17 @@ def request_document(request, client_id):
         form = RequestDocumentForm()
 
     return render(request, 'name.html', {'form': form})
+
+def upload_document(request, document_request_id):
+    if request.method == 'POST':
+        form = UploadDocumentForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            UploadDocumentService.upload(request.FILES['document'], document_request_id)
+            return HttpResponseRedirect('/client_management/clients')
+
+    context = {'document_request_id': document_request_id}
+    return render(request, 'client_management/upload_document.html', context)
 
 def clients(request):
     latest_clients_list = Client.objects.all()
