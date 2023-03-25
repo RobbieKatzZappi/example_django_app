@@ -1,0 +1,7 @@
+<form enctype="multipart/form-data" action="/client_management/upload_document/{{document_request_id}}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <label for="name">Document: </label>
+    <input id="name" type="file" name="document" value="{{ document }}">
+    <input type="submit" value="upload">
+</form>
