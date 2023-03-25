@@ -23,7 +23,9 @@ class UploadDocumentService:
           cls.instance = super(SingletonClass, cls).__new__(cls)
         return cls.instance
 
-    def upload(document, document_request_id):
+    def upload(document, document_request_uuid):
+        document_request = DocumentRequest.objects.get(uuid=document_request_uuid)
+
         accepted_file_types = {
             'image/png': '.png',
             'text/csv': '.csv',
@@ -34,11 +36,10 @@ class UploadDocumentService:
         if extension == None:
             raise Exception("Sorry that file type is not allowed")
 
-        filepath = 'files/' + str(document_request_id) + extension
+        filepath = 'files/' + str(document_request.id) + extension
         with open(filepath, 'wb+') as destination:
             for chunk in document.chunks():
                 destination.write(chunk)
-        document_request = DocumentRequest.objects.get(id=document_request_id)
         document_request.uploaded = True
         document_request.save()
         Document(name=document.name, destination=filepath, client=document_request.client).save()
