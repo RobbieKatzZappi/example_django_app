@@ -1,0 +1,24 @@
+<b><u>CLIENTS</u></b>
+{% if latest_clients_list %}
+<table>
+  <tr>
+    <td><b>id</b>&emsp;&emsp;</td>
+    <td><b>name</b>&emsp;&emsp;&emsp;&emsp;</td>
+    <td><b>email address</b>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+    <td><b># of Documents</b>&emsp;&emsp;</td>
+    <td><b># of requested documents</b></td>
+  </tr>
+  {% for client in latest_clients_list %}
+    <tr>
+      <td><a href="/client_management/client/{{ client.id }}/">{{ client.id }}</a></td>
+      <td> {{client.first_name}} {{client.surname}}</td>
+      <td> {{client.email_address}}</td>
+      <td> {{client.document_count}}</td>
+      <td> {{client.requested_document_count}}</td>
+    </tr>
+  {% endfor %}
+
+</table>
+{% else %}
+    <p>You have no clients.</p>
+{% endif %}
