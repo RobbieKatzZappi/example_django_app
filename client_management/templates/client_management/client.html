@@ -1,0 +1,32 @@
+
+<b><u>CLIENT {{client.id}}</u></b>
+<br>
+<a href="/client_management/clients">Back to Clients listing</a>
+<br>
+<br>
+<table>
+  <tr>
+    <td><b>id</b>&emsp;&emsp;</td>
+    <td><b>name</b>&emsp;&emsp;&emsp;&emsp;</td>
+    <td><b>email address</b>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;</td>
+    <td><b># of Documents</b>&emsp;&emsp;</td>
+    <td><b># of requested documents</b></td>
+  </tr>
+    <tr>
+      <td><a href="/client_management/client/{{ client.id }}/">{{ client.id }}</a></td>
+      <td> {{client.first_name}} {{client.surname}}</td>
+      <td> {{client.email_address}}</td>
+      <td> {{client.document_count}}</td>
+      <td> {{client.requested_document_count}}</td>
+    </tr>
+</table>
+<br>
+<br>
+
+<form action="/client_management/client/{{client.id}}/request_document/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <label for="document_type">Document type: </label>
+    <input id="document_type" type="text" name="document_type" value="{{ document_type }}">
+    <input type="submit" value="Request Document">
+</form>
