@@ -11,6 +11,8 @@ import pdb
 
 def index(request):
     return HttpResponse("client management index")
+def error(request):
+    return HttpResponse("error")
 
 def request_document(request, client_id):
     if request.method == 'POST':
@@ -24,15 +26,19 @@ def request_document(request, client_id):
 
     return render(request, 'name.html', {'form': form})
 
-def upload_document(request, document_request_id):
+def upload_document(request, document_request_uuid):
+    document_request_invalid = DocumentRequest.objects.filter(uuid=document_request_uuid, uploaded=False).count() == 0
+    if document_request_invalid:
+        return HttpResponseRedirect('/client_management/error')
+
     if request.method == 'POST':
         form = UploadDocumentForm(request.POST, request.FILES)
 
         if form.is_valid():
-            UploadDocumentService.upload(request.FILES['document'], document_request_id)
+            UploadDocumentService.upload(request.FILES['document'], document_request_uuid)
             return HttpResponseRedirect('/client_management/clients')
 
-    context = {'document_request_id': document_request_id}
+    context = {"document_request_uuid": document_request_uuid}
     return render(request, 'client_management/upload_document.html', context)
 
 def clients(request):
