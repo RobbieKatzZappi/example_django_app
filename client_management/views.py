@@ -23,7 +23,7 @@ def request_document(request, client_id):
         form = RequestDocumentForm(request.POST)
         if form.is_valid():
             document_type = form.cleaned_data['document_type']
-            DocumentRequestService.create(client_id, document_type)
+            DocumentRequestService().create(client_id, document_type)
             return HttpResponseRedirect('/client_management/clients')
     else:
         form = RequestDocumentForm()
@@ -43,7 +43,7 @@ def upload_document(request, document_request_uuid):
         form = UploadDocumentForm(request.POST, request.FILES)
 
         if form.is_valid():
-            UploadDocumentService.upload(request.FILES['document'], document_request_uuid)
+            UploadDocumentService().upload(request.FILES['document'], document_request_uuid)
             return HttpResponseRedirect('/client_management/clients')
 
     context = {"document_request_uuid": document_request_uuid}
