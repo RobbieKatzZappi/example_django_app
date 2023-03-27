@@ -1,6 +1,8 @@
 from django.db import models
 
 class RelationshipManager(models.Model):
+    def __str__(self):
+        return self.email_address
     first_name = models.CharField(max_length=200, default=None)
     surname = models.CharField(max_length=200, default=None)
     email_address = models.CharField(max_length=200)
@@ -8,6 +10,8 @@ class RelationshipManager(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class Client(models.Model):
+    def __str__(self):
+        return self.email_address
     first_name = models.CharField(max_length=200, default=None)
     surname = models.CharField(max_length=200, default=None)
     email_address = models.CharField(max_length=200)
@@ -21,6 +25,8 @@ class Client(models.Model):
         return self.requested_documents.filter(uploaded=False).count()
 
 class DocumentRequest(models.Model):
+    def __str__(self):
+        return self.document_type
     uuid = models.CharField(max_length=20)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='requested_documents')
     relationship_manager = models.ForeignKey(RelationshipManager, models.SET_NULL, null=True)
@@ -31,6 +37,8 @@ class DocumentRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class Document(models.Model):
+    def __str__(self):
+        return self.name
     name = models.CharField(max_length=200)
     destination = models.CharField(max_length=200)
     client = models.ForeignKey(Client, on_delete=models.CASCADE, related_name='documents')
