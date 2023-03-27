@@ -1,12 +1,8 @@
 import uuid
 from .models import Client, DocumentRequest, RelationshipManager, Document
 from django.core.mail import EmailMessage
-import pdb
 
 class EmailService(object):
-    def __init__(self):
-      self.self = self
-
     def send_client_email(self, client, document_request):
         title = "Document Request"
         recipients = [client.email_address, client.relationship_manager.email_address]
@@ -38,7 +34,6 @@ class EmailService(object):
                 )
 
         email.send()
-        return True
 
 class DocumentRequestService(object):
     def create(self, client_id, document_type):
@@ -53,8 +48,6 @@ class DocumentRequestService(object):
         document_request.save()
 
         EmailService().send_client_email(client, document_request)
-
-        return True
 
 class UploadDocumentService(object):
     def upload(self, document, document_request_uuid):
@@ -80,5 +73,3 @@ class UploadDocumentService(object):
         document.save()
 
         EmailService().send_relationship_manager_email(document_request.relationship_manager, document)
-
-        return True
