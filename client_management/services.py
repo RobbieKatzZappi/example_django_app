@@ -1,11 +1,47 @@
 import uuid
 from .models import Client, DocumentRequest, RelationshipManager, Document
-class DocumentRequestService:
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-          cls.instance = super(SingletonClass, cls).__new__(cls)
-        return cls.instance
-    def create(client_id, document_type):
+from django.core.mail import EmailMessage
+import pdb
+
+class EmailService(object):
+    def __init__(self):
+      self.self = self
+
+    def send_client_email(self, client, document_request):
+        title = "Document Request"
+        recipients = [client.email_address, client.relationship_manager.email_address]
+
+        link = "localhost:8080/client_management/upload_document/" + document_request.uuid
+        body = "You have a new document request. Please upload your requested document at : " + link + \
+            " The document requested is of type" + document_request.document_type
+
+        self.send_mail(recipients, body, title)
+
+    def send_relationship_manager_email(self, relationship_manager, document):
+        client = document.client
+        title = "Document submitted"
+        recipients = [relationship_manager.email_address]
+        link = "localhost:8080/client_management/download_document/" + str(document.id)
+        body = "Your client, " + client.first_name + " " + client.surname + " has uploaded the document you requested." + \
+            "Download link: " + link
+        self.send_mail(recipients, body, title)
+
+    def send_mail(self, recipients, body, title):
+        email = EmailMessage(
+                    title,
+                    body,
+                    'from@example.com',
+                    list(recipients),
+                    ['bcc@example.com'],
+                    reply_to=['another@example.com'],
+                    headers={'Message-ID': 'foo'},
+                )
+
+        email.send()
+        return True
+
+class DocumentRequestService(object):
+    def create(self, client_id, document_type):
         client = Client.objects.get(id=client_id)
         document_request = DocumentRequest(
             uuid = str(uuid.uuid4()),
@@ -13,17 +49,15 @@ class DocumentRequestService:
             uploaded = False,
             relationship_manager = RelationshipManager.objects.first(),
             document_type = document_type
-        ).save()
+        )
+        document_request.save()
+
+        EmailService().send_client_email(client, document_request)
 
         return True
 
-class UploadDocumentService:
-    def __new__(cls):
-        if not hasattr(cls, 'instance'):
-          cls.instance = super(SingletonClass, cls).__new__(cls)
-        return cls.instance
-
-    def upload(document, document_request_uuid):
+class UploadDocumentService(object):
+    def upload(self, document, document_request_uuid):
         document_request = DocumentRequest.objects.get(uuid=document_request_uuid)
 
         accepted_file_types = {
@@ -42,5 +76,9 @@ class UploadDocumentService:
                 destination.write(chunk)
         document_request.uploaded = True
         document_request.save()
-        Document(name=document.name, destination=filepath, client=document_request.client).save()
+        document = Document(name=document.name, destination=filepath, client=document_request.client)
+        document.save()
+
+        EmailService().send_relationship_manager_email(document_request.relationship_manager, document)
+
         return True
