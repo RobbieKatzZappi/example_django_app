@@ -12,3 +12,7 @@ The emails were implemented for local development only. The emails are printed o
 ## document upload
 
 The document upload only allows csv, pdf and png. You need to grab the url from the email (in the console). The link can only be used once. 
+
+## database
+
+a database has been committed to have enough data to test all functionality. Note that the images themselves have not been committed. so trying to download already existing documents will be broken. 
