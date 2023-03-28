@@ -1,6 +1,25 @@
 <b><u>CLIENTS</u></b>
 {% if latest_clients_list %}
+<br>
+<a href="/client_management/clients">remove filters</a>
+<br>
+
 <table>
+  <tr>
+    <td>-</td>
+    <td>{% if order_by_name == 'asc' %}
+    <a href="/client_management/clients?order_by_name=desc">></a>
+    {% else %}
+    <a href="/client_management/clients?order_by_name=asc"><</a>
+    {% endif %}</td>
+    <td>{% if order_by_email == 'asc' %}
+    <a href="/client_management/clients?order_by_email=desc">></a>
+    {% else %}
+    <a href="/client_management/clients?order_by_email=asc"><</a>
+    {% endif %}</td>
+    <td>-</td>
+    <td>-</td>
+  <tr>
   <tr>
     <td><b>id</b>&emsp;&emsp;</td>
     <td><b>name</b>&emsp;&emsp;&emsp;&emsp;</td>

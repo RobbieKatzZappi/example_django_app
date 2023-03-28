@@ -8,8 +8,9 @@ class EmailService(object):
         recipients = [client.email_address, client.relationship_manager.email_address]
 
         link = "localhost:8080/client_management/upload_document/" + document_request.uuid
-        body = "You have a new document request. Please upload your requested document at : " + link + \
-            " The document requested is of type" + document_request.document_type
+        body = "You have a new document request. Please upload your requested document at: " + link + \
+            "\nThe document requested is of type: " + document_request.document_type + "\nPlease note, " + \
+            "for security reasons you can only upload once."
 
         self.send_mail(recipients, body, title)
 
